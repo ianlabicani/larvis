@@ -1,0 +1,94 @@
+name: Bug report
+description: Report reproducible behavior that is not working as expected.
+title: '[Bug]: '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Do not include credentials, tokens, or sensitive personal data.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Expected outcome
+      description: What should happen instead, and who is affected?
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current problem
+      description: What actually happens? Include exact error text when it is safe to share.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest reliable sequence that demonstrates the problem.
+      placeholder: |
+        1. Go to ...
+        2. Select ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Affected scope
+      description: Identify affected pages, actions, tools, environments, browsers, or user roles.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: List the observable conditions that prove the bug is fixed without regressions.
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-scenarios
+    attributes:
+      label: Test scenarios
+      description: How can a developer reproduce the bug first and practically verify the fix?
+    validations:
+      required: true
+
+  - type: textarea
+    id: risks-security
+    attributes:
+      label: Risks and security considerations
+      description: Note authorization, privacy, data-loss, or security impact. Enter "None identified" when appropriate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Non-goals
+      description: Note adjacent behavior that does not need to change for this fix.
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Screenshots, logs, links, and relevant areas
+      description: Add sanitized evidence, related issues, or likely code areas.
+
+  - type: checkboxes
+    id: workflow
+    attributes:
+      label: Implementation workflow
+      description: These reminders are intentionally non-blocking when the issue is first created.
+      options:
+        - label: Create the dedicated issue branch with the latest `main` as its base.
+        - label: Include the issue number in `codex/issue-<number>-<short-description>`.
+        - label: Add or update suitable automated tests and document practical verification.
+        - label: Open a pull request targeting `main` with `Closes #<number>` in its body.
+        - label: Rebase-merge only after the required checks pass.
