@@ -27,7 +27,10 @@ export type CalendarEvent = {
     id: string;
     title: string;
     start: string;
-    status: TaskStatus;
-    priority: TaskPriority;
+    status: TaskStatus | 'pending' | 'completed' | 'missed' | 'paused';
+    priority: TaskPriority | null;
     description: string | null;
+    type: 'task' | 'routine';
+    routine_id?: number;
+    timezone?: string;
 };

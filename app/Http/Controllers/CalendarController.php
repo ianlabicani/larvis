@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Routines\ListCalendarRoutineEventsAction;
 use App\Actions\Tasks\ListCalendarTasksAction;
 use App\Data\CalendarEventData;
 use App\Http\Requests\CalendarEventsRequest;
@@ -13,12 +14,15 @@ class CalendarController extends Controller
     /**
      * Return the actor's due-dated tasks for a visible calendar range.
      */
-    public function events(CalendarEventsRequest $request, ListCalendarTasksAction $listCalendarTasks): JsonResponse
+    public function events(CalendarEventsRequest $request, ListCalendarTasksAction $listCalendarTasks, ListCalendarRoutineEventsAction $listRoutineEvents): JsonResponse
     {
-        return response()->json(
-            $listCalendarTasks->handle($request->user(), $request->start(), $request->end())
-                ->map(fn (Task $task): array => CalendarEventData::fromModel($task)->toArray())
-                ->all(),
-        );
+        $tasks = $listCalendarTasks->handle($request->user(), $request->start(), $request->end())
+            ->map(fn (Task $task): array => CalendarEventData::fromModel($task)->toArray())
+            ->all();
+        $routines = $listRoutineEvents->handle($request->user(), $request->start(), $request->end())
+            ->map(fn ($event): array => $event->toArray())
+            ->all();
+
+        return response()->json(collect([...$tasks, ...$routines])->sortBy('start')->values()->all());
     }
 }

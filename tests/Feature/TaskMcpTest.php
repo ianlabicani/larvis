@@ -19,11 +19,11 @@ beforeEach(function (): void {
     config()->set('larvis.mcp_owner_email', $this->owner->email);
 });
 
-test('the Larvis server exposes only the scoped task tools', function (): void {
+test('the Larvis server exposes only the scoped task and routine tools', function (): void {
     $server = new LarvisServer(new FakeTransporter);
 
     expect($server->createContext()->tools()->map(fn (Tool $tool): string => $tool->name())->all())
-        ->toBe(['tasks-list', 'tasks-create', 'tasks-complete', 'tasks-delete']);
+        ->toBe(['tasks-list', 'tasks-create', 'tasks-complete', 'tasks-delete', 'routines-list', 'routines-create', 'routines-complete']);
 });
 
 test('the create tool creates an owner task with structured output and an audit record', function (): void {

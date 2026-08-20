@@ -26,6 +26,9 @@ class DatabaseSeeder extends Seeder
             'tasks.create',
             'tasks.update',
             'tasks.delete',
+            'routines.view',
+            'routines.create',
+            'routines.update',
         ])->map(fn (string $permission) => Permission::findOrCreate($permission));
 
         $role = Role::findOrCreate('Larvis Owner');
