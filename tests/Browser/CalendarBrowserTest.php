@@ -10,6 +10,50 @@ beforeEach(function (): void {
     $this->owner = User::query()->where('email', 'test@example.com')->firstOrFail();
 });
 
+test('dashboard, tasks, and settings share the same desktop page spacing', function (): void {
+    $this->actingAs($this->owner);
+
+    $expectedPadding = [
+        'top' => '24px',
+        'right' => '16px',
+        'bottom' => '24px',
+        'left' => '16px',
+    ];
+    $pageSpacing = <<<'JS'
+        () => {
+            const content = document.querySelector('[data-slot="page-content"]');
+            const styles = window.getComputedStyle(content);
+
+            return {
+                top: styles.paddingTop,
+                right: styles.paddingRight,
+                bottom: styles.paddingBottom,
+                left: styles.paddingLeft,
+            };
+        }
+    JS;
+    $hasHorizontalOverflow = '() => document.documentElement.scrollWidth > window.innerWidth';
+
+    $dashboard = visit(route('dashboard'));
+
+    expect($dashboard->script($pageSpacing))->toBe($expectedPadding)
+        ->and($dashboard->script($hasHorizontalOverflow))->toBeFalse();
+
+    $tasks = visit(route('tasks.index'));
+
+    expect($tasks->script($pageSpacing))->toBe($expectedPadding)
+        ->and($tasks->script($hasHorizontalOverflow))->toBeFalse();
+
+    $settings = visit(route('profile.edit'));
+
+    expect($settings->script($pageSpacing))->toBe($expectedPadding)
+        ->and($settings->script($hasHorizontalOverflow))->toBeFalse();
+
+    $dashboard->assertNoJavaScriptErrors();
+    $tasks->assertNoJavaScriptErrors();
+    $settings->assertNoJavaScriptErrors();
+});
+
 test('the owner can navigate the default calendar and edit a task in place', function (): void {
     $task = Task::factory()->for($this->owner)->create([
         'title' => 'Calendar browser task',

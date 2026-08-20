@@ -111,7 +111,7 @@ export default function TaskCalendar({
                 </Alert>
             )}
 
-            <div className="relative h-[calc(100dvh-12rem)] min-h-0 rounded-lg border bg-card p-3 shadow-sm sm:p-6">
+            <div className="relative h-[calc(100dvh-15rem)] min-h-0 rounded-lg border bg-card p-3 shadow-sm sm:p-6">
                 {!hasLoaded && processing && (
                     <div className="absolute inset-0 z-10 flex items-center justify-center gap-2 rounded-lg bg-background/80 text-sm text-muted-foreground">
                         <Spinner />
