@@ -1,0 +1,87 @@
+name: Feature or capability proposal
+description: Propose a new capability or a meaningful extension to Larvis.
+title: '[Feature]: '
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Larvis. Describe the outcome before prescribing an implementation.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal and outcome
+      description: What should become possible, and who benefits?
+      placeholder: Describe the user-visible outcome and its value.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current problem
+      description: What limitation, pain point, or unmet need exists today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Proposed scope
+      description: Describe the behavior and areas that should change.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: List the observable conditions that define completion.
+      placeholder: |
+        - [ ] Expected behavior is available to the intended user.
+        - [ ] Relevant failure and empty states are handled.
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-scenarios
+    attributes:
+      label: Test scenarios
+      description: How can a developer practically verify the feature?
+      placeholder: Include automated coverage and the main manual user flow.
+    validations:
+      required: true
+
+  - type: textarea
+    id: risks-security
+    attributes:
+      label: Risks and security considerations
+      description: Note authorization, privacy, data integrity, compatibility, or rollout concerns. Enter "None identified" when appropriate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Non-goals
+      description: What should explicitly remain outside this issue?
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Screenshots, links, and relevant areas
+      description: Add mockups, examples, related issues, or likely application areas.
+
+  - type: checkboxes
+    id: workflow
+    attributes:
+      label: Implementation workflow
+      description: These reminders are intentionally non-blocking when the issue is first created.
+      options:
+        - label: Create the dedicated issue branch with the latest `main` as its base.
+        - label: Include the issue number in `codex/issue-<number>-<short-description>`.
+        - label: Add or update suitable automated tests and document practical verification.
+        - label: Open a pull request targeting `main` with `Closes #<number>` in its body.
+        - label: Rebase-merge only after the required checks pass.

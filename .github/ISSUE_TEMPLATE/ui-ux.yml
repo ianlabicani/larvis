@@ -1,0 +1,90 @@
+name: Small UI or UX improvement
+description: Propose a focused visual, interaction, usability, or accessibility improvement.
+title: '[UI/UX]: '
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for focused interface improvements. Larger new capabilities belong in the feature proposal form.
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: Desired user outcome
+      description: What should become clearer, faster, more accessible, or easier to use?
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current experience
+      description: Describe the existing friction or inconsistency and who encounters it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: desired-experience
+    attributes:
+      label: Desired experience
+      description: Explain the proposed interaction or visual result, including responsive and accessibility behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Proposed scope
+      description: Identify the specific screens, components, states, and viewport sizes that should change.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: List observable requirements, including keyboard, mobile, dark mode, or assistive-technology behavior when relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-scenarios
+    attributes:
+      label: Test scenarios
+      description: How can a developer practically verify the change across relevant layouts and interactions?
+    validations:
+      required: true
+
+  - type: textarea
+    id: risks-security
+    attributes:
+      label: Risks and security considerations
+      description: Note accessibility regressions, destructive interactions, exposed data, or other risks. Enter "None identified" when appropriate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Non-goals
+      description: What broader redesign or behavior should remain unchanged?
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Screenshots, recordings, links, and relevant areas
+      description: Add current-state screenshots, annotated mockups, examples, or related components.
+
+  - type: checkboxes
+    id: workflow
+    attributes:
+      label: Implementation workflow
+      description: These reminders are intentionally non-blocking when the issue is first created.
+      options:
+        - label: Create the dedicated issue branch with the latest `main` as its base.
+        - label: Include the issue number in `codex/issue-<number>-<short-description>`.
+        - label: Add or update suitable automated tests and document practical verification.
+        - label: Open a pull request targeting `main` with `Closes #<number>` in its body.
+        - label: Rebase-merge only after the required checks pass.
