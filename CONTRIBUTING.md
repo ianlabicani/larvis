@@ -11,10 +11,10 @@ Choose the feature, bug, or UI/UX form in GitHub's **New issue** flow. Define th
 Every issue branch must use the latest `main` as its base. Do not base a new issue branch on another issue or feature branch. Use this format:
 
 ```text
-codex/issue-<number>-<short-description>
+codex/<number>-<short-description>
 ```
 
-For example, issue 7 uses `codex/issue-7-github-workflow`. Keep unrelated work on separate branches unless broader scope has been explicitly approved.
+For example, issue 7 uses `codex/7-github-workflow`. Keep unrelated work on separate branches unless broader scope has been explicitly approved.
 
 ## Test the change
 
