@@ -22,3 +22,12 @@ export type TaskSummary = {
     due_soon: number;
     completed: number;
 };
+
+export type CalendarEvent = {
+    id: string;
+    title: string;
+    start: string;
+    status: TaskStatus;
+    priority: TaskPriority;
+    description: string | null;
+};

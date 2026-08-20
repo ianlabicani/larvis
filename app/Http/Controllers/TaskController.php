@@ -39,18 +39,9 @@ class TaskController extends Controller
                 'status' => $status?->value,
                 'priority' => $priority?->value,
             ],
+            'timezone' => config('app.timezone'),
             ...$this->taskOptions(),
         ]);
-    }
-
-    /**
-     * Show the task creation form.
-     */
-    public function create(Request $request, CreateTaskAction $createTask): Response
-    {
-        $createTask->authorize($request->user());
-
-        return Inertia::render('tasks/create', $this->taskOptions());
     }
 
     /**
@@ -63,19 +54,6 @@ class TaskController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => __('Task created.')]);
 
         return to_route('tasks.index');
-    }
-
-    /**
-     * Show the task edit form.
-     */
-    public function edit(Task $task, Request $request, UpdateTaskAction $updateTask): Response
-    {
-        $updateTask->authorize($request->user(), $task);
-
-        return Inertia::render('tasks/edit', [
-            'task' => TaskData::fromModel($task)->toArray(),
-            ...$this->taskOptions(),
-        ]);
     }
 
     /**
