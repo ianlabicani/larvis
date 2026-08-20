@@ -17,6 +17,13 @@ import { useCallback, useState } from 'react';
 import 'temporal-polyfill/global';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 import { events as calendarEvents } from '@/routes/calendar';
 import type { CalendarEvent } from '@/types';
@@ -46,6 +53,9 @@ export default function TaskCalendar({
     const [hasLoaded, setHasLoaded] = useState(false);
     const [range, setRange] = useState<CalendarRange | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [routinePreview, setRoutinePreview] = useState<CalendarEvent | null>(
+        null,
+    );
 
     const loadEvents = useCallback(
         async (nextRange: CalendarRange): Promise<void> => {
@@ -81,7 +91,11 @@ export default function TaskCalendar({
         );
 
         if (event) {
-            onEdit(event);
+            if (event.type === 'routine') {
+                setRoutinePreview(event);
+            } else {
+                onEdit(event);
+            }
         }
     }
 
@@ -136,19 +150,21 @@ export default function TaskCalendar({
                     events={events}
                     eventInteractive
                     eventContent={({ event }) => {
-                        const { priority, status } =
+                        const { priority, status, type } =
                             event.extendedProps as Pick<
                                 CalendarEvent,
-                                'priority' | 'status'
+                                'priority' | 'status' | 'type'
                             >;
 
                         return (
                             <span
                                 className="flex min-w-0 items-center gap-1 text-xs"
-                                aria-label={`${label(priority)} priority, ${label(status)}, ${event.title}`}
+                                aria-label={`${type === 'routine' ? 'Routine' : `${label(priority ?? 'medium')} priority`}, ${label(status)}, ${event.title}`}
                             >
                                 <span className="shrink-0 font-medium">
-                                    {label(priority)}
+                                    {type === 'routine'
+                                        ? 'Routine'
+                                        : label(priority ?? 'medium')}
                                 </span>
                                 <span aria-hidden="true">·</span>
                                 <span className="shrink-0">
@@ -164,13 +180,44 @@ export default function TaskCalendar({
                     eventClick={handleEventClick}
                     noEventsContent={() =>
                         hasLoaded
-                            ? 'No tasks are due in this range.'
-                            : 'Loading tasks…'
+                            ? 'No tasks or routines are due in this range.'
+                            : 'Loading calendar…'
                     }
                     height="100%"
                     expandRows
                 />
             </div>
+            <Dialog
+                open={routinePreview !== null}
+                onOpenChange={(open) => !open && setRoutinePreview(null)}
+            >
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{routinePreview?.title}</DialogTitle>
+                        <DialogDescription>
+                            Read-only routine occurrence
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-2 text-sm">
+                        {routinePreview?.description && (
+                            <p>{routinePreview.description}</p>
+                        )}
+                        <p>
+                            <span className="font-medium">Scheduled:</span>{' '}
+                            {routinePreview &&
+                                new Date(routinePreview.start).toLocaleString()}
+                        </p>
+                        <p>
+                            <span className="font-medium">Status:</span>{' '}
+                            {routinePreview && label(routinePreview.status)}
+                        </p>
+                        <p>
+                            <span className="font-medium">Timezone:</span>{' '}
+                            {routinePreview?.timezone}
+                        </p>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

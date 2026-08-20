@@ -35,8 +35,15 @@ const summaryCards = [
 
 export default function Dashboard({
     taskSummary,
+    todayRoutines,
 }: {
     taskSummary: TaskSummary;
+    todayRoutines: Array<{
+        id: number;
+        title: string;
+        status: string;
+        scheduled_for: string;
+    }>;
 }) {
     return (
         <>
@@ -73,6 +80,39 @@ export default function Dashboard({
                         </Link>
                     ))}
                 </div>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Routines due today</CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid gap-3">
+                        {todayRoutines.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">
+                                No routines are due today.
+                            </p>
+                        ) : (
+                            todayRoutines.map((routine) => (
+                                <div
+                                    key={routine.id}
+                                    className="flex items-center justify-between gap-4 rounded-lg border p-3"
+                                >
+                                    <div>
+                                        <p className="font-medium">
+                                            {routine.title}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {new Date(
+                                                routine.scheduled_for,
+                                            ).toLocaleTimeString()}
+                                        </p>
+                                    </div>
+                                    <span className="text-sm capitalize">
+                                        {routine.status}
+                                    </span>
+                                </div>
+                            ))
+                        )}
+                    </CardContent>
+                </Card>
             </PageContent>
         </>
     );

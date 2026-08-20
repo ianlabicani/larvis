@@ -2,6 +2,9 @@
 
 namespace App\Mcp\Servers;
 
+use App\Mcp\Tools\RoutinesCompleteTool;
+use App\Mcp\Tools\RoutinesCreateTool;
+use App\Mcp\Tools\RoutinesListTool;
 use App\Mcp\Tools\TasksCompleteTool;
 use App\Mcp\Tools\TasksCreateTool;
 use App\Mcp\Tools\TasksDeleteTool;
@@ -13,7 +16,7 @@ use Laravel\Mcp\Server\Attributes\Version;
 
 #[Name('larvis')]
 #[Version('0.0.1')]
-#[Instructions('Manage the configured Larvis owner\'s personal tasks. Use only the available task tools; task ownership is enforced by Laravel.')]
+#[Instructions('Manage the configured Larvis owner\'s personal tasks and daily routines. Use only the available scoped tools; ownership is enforced by Laravel.')]
 class LarvisServer extends Server
 {
     protected array $tools = [
@@ -21,5 +24,8 @@ class LarvisServer extends Server
         TasksCreateTool::class,
         TasksCompleteTool::class,
         TasksDeleteTool::class,
+        RoutinesListTool::class,
+        RoutinesCreateTool::class,
+        RoutinesCompleteTool::class,
     ];
 }

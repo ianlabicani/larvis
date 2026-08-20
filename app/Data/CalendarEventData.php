@@ -28,7 +28,7 @@ class CalendarEventData
     }
 
     /**
-     * @return array{id: string, title: string, start: string, status: string, priority: string, description: string|null}
+     * @return array{id: string, title: string, start: string, status: string, priority: string, description: string|null, type: string}
      */
     public function toArray(): array
     {
@@ -39,6 +39,7 @@ class CalendarEventData
             'status' => $this->status,
             'priority' => $this->priority,
             'description' => $this->description,
+            'type' => 'task',
         ];
     }
 }

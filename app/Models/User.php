@@ -42,6 +42,12 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(Task::class);
     }
 
+    /** @return HasMany<Routine, $this> */
+    public function routines(): HasMany
+    {
+        return $this->hasMany(Routine::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
