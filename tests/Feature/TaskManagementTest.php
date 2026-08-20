@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\Tasks\CompleteTaskAction;
+use App\Actions\Tasks\DeleteTaskAction;
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Models\Task;
@@ -13,7 +14,7 @@ beforeEach(function (): void {
     $this->owner = User::query()->where('email', 'test@example.com')->firstOrFail();
 });
 
-test('the owner can create, update, complete, reopen, and delete a task', function (): void {
+test('the owner can create, update, complete, reopen, and soft delete a task', function (): void {
     $this->actingAs($this->owner)
         ->post(route('tasks.store'), [
             'title' => 'Pay electricity bill',
@@ -58,7 +59,9 @@ test('the owner can create, update, complete, reopen, and delete a task', functi
         ->delete(route('tasks.destroy', $task))
         ->assertRedirect(route('tasks.index'));
 
-    $this->assertModelMissing($task);
+    $this->assertModelExists($task);
+    expect(Task::withTrashed()->findOrFail($task->id))
+        ->deleted_at->not->toBeNull();
 });
 
 test('task forms validate required fields and enum values', function (): void {
@@ -112,6 +115,40 @@ test('a user with task permissions cannot access another owner task', function (
 
     expect(fn () => app(CompleteTaskAction::class)->handle($otherUser, $task))
         ->toThrow(AuthorizationException::class);
+
+    expect(fn () => app(DeleteTaskAction::class)->handle($otherUser, $task))
+        ->toThrow(AuthorizationException::class);
+});
+
+test('soft deleted tasks are excluded from task, dashboard, and calendar queries', function (): void {
+    $task = Task::factory()->for($this->owner)->create([
+        'status' => TaskStatus::Todo,
+        'due_at' => now()->addDay(),
+    ]);
+
+    app(DeleteTaskAction::class)->handle($this->owner, $task);
+
+    $this->actingAs($this->owner)
+        ->get(route('tasks.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->has('tasks', 0));
+
+    $this->actingAs($this->owner)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('taskSummary.open', 0)
+            ->where('taskSummary.overdue', 0)
+            ->where('taskSummary.due_soon', 0)
+            ->where('taskSummary.completed', 0));
+
+    $this->actingAs($this->owner)
+        ->getJson(route('calendar.events', [
+            'start' => now()->startOfDay()->toISOString(),
+            'end' => now()->addWeek()->toISOString(),
+        ]))
+        ->assertOk()
+        ->assertExactJson([]);
 });
 
 test('the dashboard presents owner scoped task counts', function (): void {
