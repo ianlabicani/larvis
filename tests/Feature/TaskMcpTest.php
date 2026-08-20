@@ -5,6 +5,7 @@ use App\Enums\TaskStatus;
 use App\Mcp\Servers\LarvisServer;
 use App\Mcp\Tools\TasksCompleteTool;
 use App\Mcp\Tools\TasksCreateTool;
+use App\Mcp\Tools\TasksDeleteTool;
 use App\Mcp\Tools\TasksListTool;
 use App\Models\Task;
 use App\Models\TaskMcpAudit;
@@ -22,7 +23,7 @@ test('the Larvis server exposes only the scoped task tools', function (): void {
     $server = new LarvisServer(new FakeTransporter);
 
     expect($server->createContext()->tools()->map(fn (Tool $tool): string => $tool->name())->all())
-        ->toBe(['tasks-list', 'tasks-create', 'tasks-complete']);
+        ->toBe(['tasks-list', 'tasks-create', 'tasks-complete', 'tasks-delete']);
 });
 
 test('the create tool creates an owner task with structured output and an audit record', function (): void {
@@ -81,10 +82,64 @@ test('the complete tool updates the task and writes an audit record', function (
     expect(TaskMcpAudit::query()->latest()->firstOrFail()->tool_name)->toBe('tasks-complete');
 });
 
+test('the delete tool soft deletes an owner task with structured output and an audit record', function (): void {
+    $task = Task::factory()->for($this->owner)->create(['title' => 'Remove this task']);
+
+    LarvisServer::tool(TasksDeleteTool::class, ['task_id' => $task->id])
+        ->assertName('tasks-delete')
+        ->assertOk()
+        ->assertStructuredContent(fn ($json) => $json
+            ->where('task.id', $task->id)
+            ->where('task.title', 'Remove this task')
+            ->whereType('task.deleted_at', 'string')
+            ->where('already_deleted', false));
+
+    $deletedTask = Task::withTrashed()->findOrFail($task->id);
+    $audit = TaskMcpAudit::query()->latest()->firstOrFail();
+
+    expect($deletedTask->deleted_at)->not->toBeNull();
+    expect($audit)
+        ->tool_name->toBe('tasks-delete')
+        ->task_id->toBe($task->id)
+        ->task->is($deletedTask)->toBeTrue();
+
+    LarvisServer::tool(TasksListTool::class)
+        ->assertOk()
+        ->assertDontSee('Remove this task');
+});
+
+test('the delete tool is idempotent and does not create a second audit record', function (): void {
+    $task = Task::factory()->for($this->owner)->create(['title' => 'Already removed task']);
+
+    LarvisServer::tool(TasksDeleteTool::class, ['task_id' => $task->id])->assertOk();
+    $deletedAt = Task::withTrashed()->findOrFail($task->id)->deleted_at?->toISOString();
+
+    LarvisServer::tool(TasksDeleteTool::class, ['task_id' => $task->id])
+        ->assertOk()
+        ->assertStructuredContent(fn ($json) => $json
+            ->where('task.id', $task->id)
+            ->where('task.deleted_at', $deletedAt)
+            ->where('already_deleted', true));
+
+    expect(TaskMcpAudit::query()->where('tool_name', 'tasks-delete')->count())->toBe(1);
+});
+
+test('the delete tool cannot remove another user task', function (): void {
+    $otherTask = Task::factory()->for(User::factory())->create();
+
+    LarvisServer::tool(TasksDeleteTool::class, ['task_id' => $otherTask->id])
+        ->assertHasErrors();
+
+    expect($otherTask->refresh()->trashed())->toBeFalse();
+});
+
 test('the task tools reject invalid input and arbitrary owner input', function (): void {
     LarvisServer::tool(TasksCreateTool::class, ['priority' => 'invalid'])
         ->assertHasErrors(['title']);
 
     LarvisServer::tool(TasksListTool::class, ['user_id' => 999])
         ->assertHasErrors(['user id']);
+
+    LarvisServer::tool(TasksDeleteTool::class, ['user_id' => 999])
+        ->assertHasErrors(['task id', 'user id']);
 });

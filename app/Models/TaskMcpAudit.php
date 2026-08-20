@@ -27,7 +27,7 @@ class TaskMcpAudit extends Model
     /** @return BelongsTo<Task, $this> */
     public function task(): BelongsTo
     {
-        return $this->belongsTo(Task::class);
+        return $this->belongsTo(Task::class)->withTrashed();
     }
 
     /**

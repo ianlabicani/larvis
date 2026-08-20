@@ -4,6 +4,7 @@ namespace App\Mcp\Servers;
 
 use App\Mcp\Tools\TasksCompleteTool;
 use App\Mcp\Tools\TasksCreateTool;
+use App\Mcp\Tools\TasksDeleteTool;
 use App\Mcp\Tools\TasksListTool;
 use Laravel\Mcp\Server;
 use Laravel\Mcp\Server\Attributes\Instructions;
@@ -19,5 +20,6 @@ class LarvisServer extends Server
         TasksListTool::class,
         TasksCreateTool::class,
         TasksCompleteTool::class,
+        TasksDeleteTool::class,
     ];
 }

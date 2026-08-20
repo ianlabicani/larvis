@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -22,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property TaskPriority $priority
  * @property Carbon|null $due_at
  * @property Carbon|null $completed_at
+ * @property Carbon|null $deleted_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -30,7 +32,7 @@ use Illuminate\Support\Carbon;
 class Task extends Model
 {
     /** @use HasFactory<TaskFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
