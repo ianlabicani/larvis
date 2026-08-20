@@ -3,6 +3,7 @@ import { Check, Pencil, Plus, RotateCcw, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import TaskController from '@/actions/App/Http/Controllers/TaskController';
 import Heading from '@/components/heading';
+import PageContent from '@/components/page-content';
 import TaskCalendar from '@/components/task-calendar';
 import TaskCalendarDialog from '@/components/task-calendar-dialog';
 import type { TaskEditor } from '@/components/task-calendar-dialog';
@@ -73,7 +74,7 @@ export default function TasksIndex({
         <>
             <Head title="Tasks" />
 
-            <div className="space-y-6">
+            <PageContent className="space-y-6">
                 <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <Heading
                         variant="small"
@@ -286,7 +287,7 @@ export default function TasksIndex({
                         )}
                     </>
                 )}
-            </div>
+            </PageContent>
 
             <TaskCalendarDialog
                 editor={editor}
