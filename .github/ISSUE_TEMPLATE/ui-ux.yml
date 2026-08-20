@@ -84,7 +84,7 @@ body:
       description: These reminders are intentionally non-blocking when the issue is first created.
       options:
         - label: Create the dedicated issue branch with the latest `main` as its base.
-        - label: Include the issue number in `codex/issue-<number>-<short-description>`.
+        - label: Include the issue number in `codex/<number>-<short-description>`.
         - label: Add or update suitable automated tests and document practical verification.
         - label: Open a pull request targeting `main` with `Closes #<number>` in its body.
         - label: Rebase-merge only after the required checks pass.

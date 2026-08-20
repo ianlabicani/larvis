@@ -14,7 +14,7 @@ Closes #<!-- issue number -->
 ## Workflow checklist
 
 - [ ] This pull request contains work for one issue unless broader scope was explicitly approved.
-- [ ] The issue branch uses the latest `main` as its base and follows `codex/issue-<number>-<short-description>`.
+- [ ] The issue branch uses the latest `main` as its base and follows `codex/<number>-<short-description>`.
 - [ ] Suitable tests were added or updated for the changed behavior.
 - [ ] The pull request targets `main` and its body includes `Closes #<number>`.
 - [ ] The pull request is ready to be rebase-merged after all required checks pass.
